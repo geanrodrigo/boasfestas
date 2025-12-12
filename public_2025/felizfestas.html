@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Natal e Próspero 2026</title>
+    <!-- Fontes Google para elegância -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --primary-silver: #C0C0C0;
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Efeito de Neve (Canvas) */
+        #snow-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Container Principal */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 800px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+        }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--primary-silver);
+            margin-bottom: 2rem;
+        }
+
+        .message-box {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+            color: #e2e8f0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem 0;
+        }
+
+        /* Tabs para alternar mensagens */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cinzel', serif;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--primary-gold);
+            color: var(--bg-dark);
+        }
+
+        .message-content {
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+
+        .message-content.active {
+            display: block;
+        }
+
+        /* Contagem Regressiva */
+        .countdown-container {
+            margin-top: 2rem;
+        }
+        
+        .countdown-title {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            color: var(--primary-silver);
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            min-width: 80px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .time-value {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: var(--primary-gold);
+            font-weight: 700;
+        }
+
+        .time-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+        }
+
+        /* Botão de Música */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--primary-gold);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: var(--primary-gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .music-control:hover {
+            background: var(--primary-gold);
+            color: var(--bg-dark);
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .time-box { min-width: 60px; padding: 0.5rem; }
+            .time-value { font-size: 1.5rem; }
+            .container { width: 95%; padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="snow-canvas"></canvas>
+
+    <!-- Controle de Música -->
+    <button class="music-control" onclick="toggleMusic()">
+        <span id="music-icon">🎵</span> <span id="music-text">Tocar Música</span>
+    </button>
+    
+    <!-- Áudio (Substitua o src pelo seu arquivo) -->
+    <!-- Utilizando um link de exemplo royalty-free -->
+    <audio id="bg-music" loop>
+        <source src="C:\Users\grol\Downloads\christmas-inspiring-music.mp3" type="audio/mpeg">
+        Seu navegador não suporta áudio.
+    </audio>
+
+    <div class="container">
+        <h1>Boas Festas</h1>
+        <h2>Celebre o fim de um ciclo</h2>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('natal')">Mensagem de Natal</button>
+            <button class="tab-btn" onclick="openTab('anoNovo')">Ano Novo 2026</button>
+        </div>
+
+        <div class="message-box">
+            <div id="natal" class="message-content active">
+                <p>Neste Natal, desejo que a luz da esperança ilumine seu caminho e que a harmonia preencha seu lar. Que seja um tempo de reflexão, gratidão e de celebrar o amor junto àqueles que tornam a vida especial. Que a magia desta data renove suas energias e traga paz ao seu coração.</p>
+            </div>
+            <div id="anoNovo" class="message-content">
+                <p>Que 2026 seja o palco das suas maiores conquistas. Desejo um ano de prosperidade, saúde e sucesso profissional. Que cada dia do novo ano traga oportunidades para crescer, aprender e ser feliz. Vamos brindar ao futuro e às infinitas possibilidades que nos aguardam!</p>
+            </div>
+        </div>
+
+        <div class="countdown-container">
+            <div class="countdown-title">Contagem Regressiva para 2026</div>
+            <div class="countdown">
+                <div class="time-box">
+                    <span class="time-value" id="days">00</span>
+                    <span class="time-label">Dias</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="hours">00</span>
+                    <span class="time-label">Horas</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="minutes">00</span>
+                    <span class="time-label">Min</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="seconds">00</span>
+                    <span class="time-label">Seg</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Lógica das Abas (Tabs) ---
+        function openTab(tabName) {
+            // Esconder todos os conteúdos
+            const contents = document.getElementsByClassName('message-content');
+            for (let content of contents) {
+                content.classList.remove('active');
+            }
+            // Remover classe active dos botões
+            const buttons = document.getElementsByClassName('tab-btn');
+            for (let btn of buttons) {
+                btn.classList.remove('active');
+            }
+            
+            // Mostrar o conteúdo selecionado
+            document.getElementById(tabName).classList.add('active');
+            // Adicionar classe active ao botão clicado (identificação simples via event não implementada para manter simples, mas visualmente funcional)
+            event.target.classList.add('active');
+        }
+
+        // --- Contagem Regressiva para 2026 ---
+        const newYearDate = new Date("January 1, 2026 00:00:00").getTime();
+
+        const countdownInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = newYearDate - now;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.querySelector('.countdown').innerHTML = "<div class='time-value'>FELIZ 2026!</div>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+        }, 1000);
+
+        // --- Player de Música ---
+        const audio = document.getElementById("bg-music");
+        const musicBtn = document.querySelector(".music-control");
+        const musicIcon = document.getElementById("music-icon");
+        const musicText = document.getElementById("music-text");
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicIcon.innerText = "🎵";
+                musicText.innerText = "Tocar Música";
+            } else {
+                audio.play().catch(error => alert("Interaja com a página primeiro para tocar o áudio."));
+                musicIcon.innerText = "⏸";
+                musicText.innerText = "Pausar";
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // --- Efeito de Neve (Canvas API) ---
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const snowflakes = [];
+
+        function createSnowflake() {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 3 + 1,
+                speed: Math.random() * 1 + 0.5,
+                opacity: Math.random() * 0.5 + 0.3
+            };
+        }
+
+        for (let i = 0; i < 100; i++) {
+            snowflakes.push(createSnowflake());
+        }
+
+        function drawSnow() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            
+            snowflakes.forEach(flake => {
+                ctx.beginPath();
+                ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+                ctx.globalAlpha = flake.opacity;
+                ctx.fill();
+                
+                // Mover
+                flake.y += flake.speed;
+                
+                // Resetar se sair da tela
+                if (flake.y > canvas.height) {
+                    flake.y = 0;
+                    flake.x = Math.random() * canvas.width;
+                }
+            });
+            requestAnimationFrame(drawSnow);
+        }
+
+        drawSnow();
+
+        // Ajustar canvas no resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

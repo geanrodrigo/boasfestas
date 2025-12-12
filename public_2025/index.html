@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Natal e Próspero 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --primary-silver: #C0C0C0;
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* TELA DE ENTRADA (Intro Overlay) */
+        #intro-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #020617;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease;
+        }
+
+        .intro-content {
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        .intro-btn {
+            background: transparent;
+            border: 2px solid var(--primary-gold);
+            color: var(--primary-gold);
+            padding: 1rem 3rem;
+            font-size: 1.5rem;
+            font-family: 'Cinzel', serif;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 20px;
+        }
+
+        .intro-btn:hover {
+            background: var(--primary-gold);
+            color: #000;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Conteúdo Principal (oculto inicialmente para efeito) */
+        .main-content-wrapper {
+            opacity: 0;
+            transition: opacity 2s ease;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        #snow-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 800px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+        }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--primary-silver);
+            margin-bottom: 2rem;
+        }
+
+        .message-box {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+            color: #e2e8f0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem 0;
+        }
+
+        .tabs { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem; }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cinzel', serif;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--primary-gold);
+            color: var(--bg-dark);
+        }
+
+        .message-content { display: none; animation: slideUp 0.5s ease; }
+        .message-content.active { display: block; }
+
+        .countdown-container { margin-top: 2rem; }
+        .countdown-title {
+            text-transform: uppercase; letter-spacing: 2px;
+            font-size: 0.9rem; margin-bottom: 1rem; color: var(--primary-silver);
+        }
+
+        .countdown { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; }
+
+        .time-box {
+            display: flex; flex-direction: column; align-items: center;
+            background: rgba(0,0,0,0.3); padding: 1rem;
+            border-radius: 10px; min-width: 80px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .time-value {
+            font-family: 'Cinzel', serif; font-size: 2.5rem;
+            color: var(--primary-gold); font-weight: 700;
+        }
+
+        .time-label { font-size: 0.7rem; text-transform: uppercase; margin-top: 0.5rem; }
+
+        /* Botão de Música Pequeno (para controle posterior) */
+        .music-control {
+            position: fixed; top: 20px; right: 20px; z-index: 100;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--primary-gold);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: var(--primary-gold);
+            display: none; /* Só aparece depois de entrar */
+            align-items: center; gap: 10px;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+        .music-control:hover { background: var(--primary-gold); color: var(--bg-dark); }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .time-box { min-width: 60px; padding: 0.5rem; }
+            .time-value { font-size: 1.5rem; }
+            .container { width: 95%; padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tela de Intro para Forçar Interação -->
+    <div id="intro-overlay">
+        <div class="intro-content">
+            <h1 style="font-size: 1.5rem; margin-bottom: 20px; color: #fff;">Você recebeu uma mensagem especial</h1>
+            <button class="intro-btn" onclick="startExperience()">Abrir Cartão ✨</button>
+        </div>
+    </div>
+
+    <canvas id="snow-canvas"></canvas>
+
+    <!-- Controle de Música (visível após entrar) -->
+    <button class="music-control" id="btn-music" onclick="toggleMusic()">
+        <span id="music-icon">⏸</span> <span id="music-text">Pausar Música</span>
+    </button>
+    
+    <!-- Áudio -->
+    <audio id="bg-music" loop>
+        <source src="https://ia800508.us.archive.org/15/items/WeWishYouAMerryChristmas_100/We%20Wish%20You%20A%20Merry%20Christmas.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="main-content-wrapper" id="main-wrapper">
+        <div class="container">
+            <h1>Boas Festas</h1>
+            <h2>Celebre o fim de um ciclo</h2>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab('natal')">Mensagem de Natal</button>
+                <button class="tab-btn" onclick="openTab('anoNovo')">Ano Novo 2026</button>
+            </div>
+
+            <div class="message-box">
+                <div id="natal" class="message-content active">
+                    <p>Neste Natal, desejo que a luz da esperança ilumine seu caminho e que a harmonia preencha seu lar. Que seja um tempo de reflexão, gratidão e de celebrar o amor junto àqueles que tornam a vida especial. Que a magia desta data renove suas energias e traga paz ao seu coração.</p>
+                </div>
+                <div id="anoNovo" class="message-content">
+                    <p>Que 2026 seja o palco das suas maiores conquistas. Desejo um ano de prosperidade, saúde e sucesso profissional. Que cada dia do novo ano traga oportunidades para crescer, aprender e ser feliz. Vamos brindar ao futuro e às infinitas possibilidades que nos aguardam!</p>
+                </div>
+            </div>
+
+            <div class="countdown-container">
+                <div class="countdown-title">Contagem Regressiva para 2026</div>
+                <div class="countdown">
+                    <div class="time-box"><span class="time-value" id="days">00</span><span class="time-label">Dias</span></div>
+                    <div class="time-box"><span class="time-value" id="hours">00</span><span class="time-label">Horas</span></div>
+                    <div class="time-box"><span class="time-value" id="minutes">00</span><span class="time-label">Min</span></div>
+                    <div class="time-box"><span class="time-value" id="seconds">00</span><span class="time-label">Seg</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Função de Início (Entrada no Site) ---
+        function startExperience() {
+            const overlay = document.getElementById('intro-overlay');
+            const mainWrapper = document.getElementById('main-wrapper');
+            const musicControl = document.getElementById('btn-music');
+            const audio = document.getElementById('bg-music');
+
+            // Toca a música (agora permitido porque o usuário clicou)
+            audio.volume = 0.5;
+            audio.play().then(() => {
+                isPlaying = true;
+            }).catch(e => console.log("Erro áudio: ", e));
+
+            // Efeito visual de transição
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                mainWrapper.style.opacity = '1';
+                musicControl.style.display = 'flex'; // Mostra botão de controle
+            }, 1000);
+        }
+
+        // --- Lógica das Abas ---
+        function openTab(tabName) {
+            const contents = document.getElementsByClassName('message-content');
+            for (let content of contents) content.classList.remove('active');
+            const buttons = document.getElementsByClassName('tab-btn');
+            for (let btn of buttons) btn.classList.remove('active');
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // --- Contagem Regressiva ---
+        const newYearDate = new Date("January 1, 2026 00:00:00").getTime();
+        setInterval(function() {
+            const now = new Date().getTime();
+            const distance = newYearDate - now;
+            if (distance < 0) {
+                document.querySelector('.countdown').innerHTML = "<div class='time-value'>FELIZ 2026!</div>";
+                return;
+            }
+            document.getElementById("days").innerText = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
+            document.getElementById("hours").innerText = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+        }, 1000);
+
+        // --- Player de Música ---
+        const audio = document.getElementById("bg-music");
+        const musicIcon = document.getElementById("music-icon");
+        const musicText = document.getElementById("music-text");
+        let isPlaying = false; // Começa falso, vira true no startExperience
+
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+                musicIcon.innerText = "⏸";
+                musicText.innerText = "Pausar Música";
+            } else {
+                audio.pause();
+                musicIcon.innerText = "🎵";
+                musicText.innerText = "Tocar Música";
+            }
+        }
+
+        // --- Efeito de Neve ---
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const snowflakes = Array.from({ length: 100 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: Math.random() * 3 + 1,
+            speed: Math.random() * 1 + 0.5,
+            opacity: Math.random() * 0.5 + 0.3
+        }));
+
+        function drawSnow() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            snowflakes.forEach(flake => {
+                ctx.beginPath();
+                ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+                ctx.globalAlpha = flake.opacity;
+                ctx.fill();
+                flake.y += flake.speed;
+                if (flake.y > canvas.height) { flake.y = 0; flake.x = Math.random() * canvas.width; }
+            });
+            requestAnimationFrame(drawSnow);
+        }
+        drawSnow();
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+    </script>
+</body>
+</html>
